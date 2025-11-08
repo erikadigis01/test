@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmls:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Layout}">
+    
+    <body class="container bg-light" layout:fragment="content">
+        <header>
+            <div class="d-flex align-items-center p-3 my-4 text-white  bg-primary rounded shadow-sm">
+                <h3 class="3h-3">Usuarios</h3>
+            </div>
+            <div> 
+                <form>
+                    <div class="row justify-content-end">
+                        <div class="col-1">
+                            <button class="btn btn-secondary" id="btnMostrarOpciones" onclick="mostrarBoton(event, this)"> Carga</button>
+                            <div>
+<!--                                <label for="archivoTxt" class="btn btn-outline-secondary">Archivo txt</label>-->
+                                <input type="file" id="archivoTxt" accept=".txt" class="form-control" onchange="isTxt(event, this)">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                             <select class="form-select">
+                                 <option value="0" selected>Buscar por</option>
+                                 <option value="nombre">Nombre</option>
+                                 <option value="apellidoPaterno" >Apellido Paterno</option>
+                                 <option value="apellidoMaterno" >Apellido Materno</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                             <input type="text" class="form-control" id=""  placeholder="Campo" >
+                        </div>
+                        <div class="col-1">
+                             <a class="btn btn-secondary">Buscar</a>
+                        </div>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </header>
+        <main>
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <div class="row justify-content-end">
+                    <div class="col-2 d-flex justify-content-end">
+                        <a type="button" class="btn btn-success"  th:href="@{/usuario/add}">
+                            <i class="bi bi-plus-lg"></i>
+                            Agregar
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class=" table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-black-50">#Id</th>
+                            <th scope="col-1" class="text-black-50">Imagen</th>
+                            <th scope="col-1" class="text-black-50">
+                                Nombre
+                            </th>
+                            <th scope="col" class="text-black-50">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                Direccion
+                            </th>
+                            <th scope="col" class="text-black-50">
+                                <i class="bi bi-telephone-fill"></i>
+                                Contacto
+                            </th>
+                            <th scope="col" class="text-black-50">Roll</th>
+                            <th scope="col" class="text-black-50">Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario, iterStat: ${usuarios}" >
+                            <th  scope="row"><span th:text="${iterStat.index + 1}"></span></th>
+                            <td class="col-1">
+                                <img th:src="${usuario.Imagen == null} ? 'https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg' : 'data:image/jpeg;base64,' + ${usuario.Imagen}"
+                                 alt="Foto de perfil" class="rounded-circle" id="imagen" width="42">
+                            </td>
+                            <td class="col-1" th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno}|"></td>
+                            <td class="col-4">
+                                <ul th:each="direccion, iterStat: ${usuario.Direccion}">
+                                    <li th:text="|Calle: ${direccion.Calle}, Numero Interior: ${direccion.NumeroInterior}, Numero Exterior: ${direccion.NumeroExterior}, Numero Exterior: ${direccion.NumeroExterior}|"></li>
+                                </ul>
+
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>Celular: <span th:text="${usuario.Celular}"></span></li>
+                                    <li>Telefono: <span th:text="${usuario.Telefono}"></span></li>
+                                    <li>Email: <span th:text="${usuario.Email}"></span></li>
+                                </ul>
+                            </td>
+                            <td class="">
+                                <div class="badge text-bg-secondary"><span th:text="${usuario.Roll.NombreRoll}"></span></div>
+                            </td>
+                            <td class=" col-3">
+                                <a type="button" class="btn btn-primary " th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"> 
+                                    <i class="bi bi-pencil-square"></i>
+                                    Editar
+                                </a>
+                                <button type="button" class="btn btn-danger" th:onclick="|confirmarEliminacion(${usuario.IdUsuario})|"><!-- th:href="@{/usuario/delete/{id}(id=${usuario.IdUsuario})}-->
+                                    <i class="bi bi-trash3-fill"></i>
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr> 
+                    </tbody>
+                </table>
+                    
+                </div>
+            </div>
+        </main>
+        <footer>
+        </footer>
+    </body>
+    <script th:if="${successMessage}" th:inline="javascript">
+        Swal.fire({
+            title: [[${successMessage}]],
+            icon: "success",
+            draggable: true
+        });
+    </script>
+    <script th:if="${successDeleteMessage}" th:inline="javascript">
+        Swal.fire({
+            title: [[${successDeleteMessage}]],
+            icon: "success",
+            draggable: true
+        });
+    </script>
+    <script  th:inline="javascript">
+        function isTxt(event, input){
+            alert("entro a la funcion");
+            let value = $("#archivoTxt").val().split('\\').pop();
+            let extension = value.split('.').pop().toLowerCase();
+            
+            if (extension == 'txt') {
+                alert('archivo valido');
+            } else {
+                alert('archivo invalido');
+            }
+        }
+        
+        function confirmarEliminacion(idUsuario){
+            
+            Swal.fire({
+            title: "Estas seguro de eliminar este usuario?",
+            text: "No puedes revertir esta accion!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminalo" 
+          }).then((result) => {
+            if (result.isConfirmed) {
+//              eliminarUsuario(idUsuario);
+                window.location.href = "/usuario/delete/"+idUsuario;
+            }
+          });
+        }
+        
+//        function eliminarUsuario(idUsuario){ 
+//            $.ajax({
+//                type: 'GET',
+//                url: "/usuario/delete/" + idUsuario,
+//                dataType: "json",
+//                sucess: function (data, textStatus, jqXHR) {
+//                    Swal.fire({
+//                    title: "Eliminado",
+//                    text: "Tu usuario fue eliminado",
+//                    icon: "success"
+//                  });
+//                },
+//                error: function (jqXHR, textStatus, errorThrown) {
+//                    Swal.fire({
+//                        
+//                        title: "Error",
+//                        text: "No se pudo eliminar correctamente",
+//                        icon: "error"
+//                    });
+//                }
+//            });
+//        }
+
+    </script>
+   
+</html>
+
