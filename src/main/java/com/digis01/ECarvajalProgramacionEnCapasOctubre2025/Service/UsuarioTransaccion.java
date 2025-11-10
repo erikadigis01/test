@@ -23,7 +23,7 @@ public class UsuarioTransaccion {
             do{
             
                 Result resultUsuario = new Result();
-                resultUsuario = usuarioDAOImplementation.AddWithoutDireccion(usuarios.get(i));
+//                resultUsuario = usuarioDAOImplementation.AddWithoutDireccion(usuarios.get(i));
                 
                 if(resultUsuario.correct == false) {
                 

@@ -55,73 +55,123 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-
 @Controller
 @RequestMapping("usuario")
 public class UsuarioController {
 
     @Autowired
     private UsuarioDAOImplementation usuarioDAOImplementation;
-    
+
     @Autowired
     private RollDAOImplementation rollDAOImplementation;
 
     @Autowired
     private PaisDAOImplementation paisDAOImplementation;
-    
-     @Autowired
+
+    @Autowired
     private EstadoDAOImplementation estadoImplementation;
-     
-     @Autowired
+
+    @Autowired
     private ColoniaDAOImplementation coloniaImplementation;
-     
+
     @Autowired
     private MunicipioDAOImplementation municipioImplementation;
-    
+
     @Autowired
     private UsuarioValidator usuarioValidator;
-    
-    @Autowired 
+
+    @Autowired
     private UsuarioTransaccion usuarioTransaccion;
-    
-    
+
     @GetMapping
     public String Index(Model model) {
         Result result = usuarioDAOImplementation.GetAll();
         model.addAttribute("usuarios", result.objects);
-        
+        model.addAttribute("errores", new ArrayList<>());
+        model.addAttribute("isCorrect", false);
+
         return "UsuarioIndex";
 
     }
-    @GetMapping("carga")
-    public String Carga(Model model){
-        Result result = usuarioDAOImplementation.GetAll();
-        model.addAttribute("usuarios", result.objects);
-        return "UsuarioVistaIndex";
-    }
     
     @GetMapping("/cargamasiva/procesar")
-    public String CargaMasivaProcesar(HttpSession session){
-        
+    public String CargaMasivaProcesar(HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+
         String Path = session.getAttribute("archivoCargaMasiva").toString();
-        session.removeAttribute("archivoCargaMasiva");
-//        usuarioTransaccion.AddUserCargaMasiva(usuarios);
-        return "redirect:/usuario";
+
+        File archivo = new File(Path);
+
+        String extension = archivo.getName().split("\\.")[1];
+        List<Usuario> usuarios = new ArrayList<>();
+
+        switch (extension) {
+            case "txt": {
+                usuarios = LecturaTxt(new File(Path));
+                break;
+            }
+            case "xlsx": {
+                System.out.print("Es un archivo excel");
+                usuarios = LecturaXlsx(new File(Path));
+                break;
+            }
+            default:
+                System.out.print("Es otro tipo de archivo");
+                break;
+        }
+
+        List<ErrorCarga> errores = new ArrayList<>();
+
+        if (usuarios != null && !usuarios.isEmpty()) {
+
+            errores = ValidarCampos(usuarios);
+            if (errores == null || errores.isEmpty()) {
+
+                usuarioDAOImplementation.AddAll(usuarios);
+                System.out.print("Las datos no contienen errores");
+            } else {
+
+                System.out.print("Las datos contienen errores");
+            }
+            System.out.print("La lista  contiene datos");
+        } else {
+
+            System.out.println("La lista de usuarios no contiene datos");
+
+        }
+
+        Result result = usuarioDAOImplementation.GetAll();
+        model.addAttribute("usuarios", result.objects);
+        model.addAttribute("errores", new ArrayList<>());
+        model.addAttribute("isCorrect", false);
+        
+        if(result.correct){
+        
+            redirectAttributes.addFlashAttribute("successAddAll", "Se agregaron correctamente");
+        
+        } else {
+        
+            redirectAttributes.addFlashAttribute("successAddAll", "No agregaron correctamente");
+        
+        
+        }
+        
+        return "UsuarioIndex";
     }
-    
+
     @PostMapping("/cargamasiva")
     public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo,
-            RedirectAttributes redirectAttributes, Model model, HttpSession session){
+            RedirectAttributes redirectAttributes, Model model, HttpSession session) {
         List<ErrorCarga> errores = new ArrayList<>();
-        if(archivo != null && !archivo.isEmpty()){
-        
+        if (archivo != null && !archivo.isEmpty()) {
+
             String extension = archivo.getOriginalFilename().split("\\.")[1];
-            
+
             String path = System.getProperty("user.dir");
             String pathArchivo = "src/main/resources/archivosCarga";
             String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
             String pathDefinitvo = path + "/" + pathArchivo + "/" + fecha + archivo.getOriginalFilename();
-              
+
             try {
                 archivo.transferTo(new File(pathDefinitvo));
                 System.out.println("Se creo el archivo");
@@ -136,61 +186,59 @@ public class UsuarioController {
             List<Usuario> usuarios = new ArrayList<>();
 
             switch (extension) {
-                case "txt":
-                    {
-                        usuarios = LecturaTxt(new File(pathDefinitvo));
-                        break;
-                    }
-                case "xlsx":
-                    {
-                        System.out.print("Es un archivo excel");
-                        usuarios = LecturaXlsx(new File(pathDefinitvo));
-                        break;
-                    }
+                case "txt": {
+                    usuarios = LecturaTxt(new File(pathDefinitvo));
+                    break;
+                }
+                case "xlsx": {
+                    System.out.print("Es un archivo excel");
+                    usuarios = LecturaXlsx(new File(pathDefinitvo));
+                    break;
+                }
                 default:
                     System.out.print("Es otro tipo de archivo");
                     break;
             }
 
+            if (usuarios != null && !usuarios.isEmpty()) {
 
-
-            if(usuarios != null && !usuarios.isEmpty()) {
-                
                 errores = ValidarCampos(usuarios);
-                if(errores == null || errores.isEmpty()){
-                      usuarioTransaccion.AddUserCargaMasiva(usuarios);
-//                    redirectAttributes.addFlashAttribute("successErrorUsers", errores.get(0).descripcion);
+                if (errores.isEmpty()) {
+                    session.setAttribute("archivoCargaMasiva", pathDefinitvo);
+//                    CargaMasivaProcesar(session);
+                    model.addAttribute("listaUsuarios", usuarios);
+                    model.addAttribute("errores", errores);
+                    model.addAttribute("isCorrect", true);
+                   
                     System.out.print("Las datos no contienen errores");
                 } else {
-                    
+
                     model.addAttribute("errores", errores);
                     session.setAttribute("archivoCargaMasiva", pathDefinitvo);
                 }
                 System.out.print("La lista  contiene datos");
-            } else{
+            } else {
 
-                 System.out.println("La lista de usuarios no contiene datos");
+                System.out.println("La lista de usuarios no contiene datos");
 
             }
         }
-        
-        
+
         Result result = usuarioDAOImplementation.GetAll();
         model.addAttribute("usuarios", result.objects);
-        
+
         return "UsuarioIndex";
-    
+
     }
-    
-    public List <Usuario> LecturaXlsx(File archivo){
+
+    public List<Usuario> LecturaXlsx(File archivo) {
         List<Usuario> usuarios = new ArrayList<>();
-        try(InputStream fileInputStream = new FileInputStream(archivo);
-            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream)){
-            
+        try (InputStream fileInputStream = new FileInputStream(archivo); XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream)) {
+
             XSSFSheet workSheet = workbook.getSheetAt(0);
-            
-            for (Row row: workSheet) {
-            
+
+            for (Row row : workSheet) {
+
                 Usuario usuario = new Usuario();
                 usuario.setUserName(row.getCell(0).toString());
                 usuario.setNombre(row.getCell(1).toString());
@@ -198,86 +246,84 @@ public class UsuarioController {
                 usuario.setApellidoMaterno(row.getCell(3).toString());
                 usuario.setEmail(row.getCell(4).toString());
                 usuario.setPassword(row.getCell(5).toString());
-                
-                String fecha  = row.getCell(6).toString();
+
+                String fecha = row.getCell(6).toString();
                 SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
                 usuario.setFechaNacimiento(format.parse(fecha));
-                
+
                 char sexo = row.getCell(7).toString().charAt(0);
                 usuario.setSexo(sexo);
-                
+
                 usuario.setTelefono(row.getCell(8).toString());
                 usuario.setCelular(row.getCell(9).toString());
                 usuario.setCurp(row.getCell(10).toString());
                 usuario.Roll = new Roll();
-                
+
                 String number = row.getCell(11).toString();
                 int value = number.charAt(0);
                 usuario.Roll.setIdRoll(value);
-                
+
                 usuarios.add(usuario);
-                
+
             }
-        
-        
+
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
-        
+
         }
         return usuarios;
     }
-    
-    public List<Usuario> LecturaTxt(File archivo){
-        List<Usuario>  usuarios = new ArrayList<>();
-        
-        try(InputStream fileInputStream = new FileInputStream(archivo); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));){
-                String linea = "";
-                
-                while(( linea = bufferedReader.readLine()) != null) {
 
-                    String[] campos = linea.split("\\|");
-                    Usuario usuario = new Usuario();
-                    usuario.setUserName(campos[0]);
-                    usuario.setNombre(campos[1]);
-                    usuario.setApellidoPaterno(campos[2]);
-                    usuario.setApellidoMaterno(campos[3]);
-                    usuario.setEmail(campos[4]);
-                    usuario.setPassword(campos[5]);
+    public List<Usuario> LecturaTxt(File archivo) {
+        List<Usuario> usuarios = new ArrayList<>();
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    usuario.setFechaNacimiento(simpleDateFormat.parse(campos[6]));
+        try (InputStream fileInputStream = new FileInputStream(archivo); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));) {
+            String linea = "";
 
-                    char sexo = campos[7].charAt(0);
-                    usuario.setSexo(sexo);
+            while ((linea = bufferedReader.readLine()) != null) {
 
-                    usuario.setTelefono(campos[8]);
-                    usuario.setCelular(campos[9]);
-                    usuario.setCurp(campos[10]);
-                    
-                    usuario.Roll = new Roll();
-                    
-                    int number = Integer.parseInt(campos[11]);
-                    usuario.Roll.setIdRoll(number);
-                    
-                    System.out.println("usuario : " + usuario.getNombre());
-                    usuarios.add(usuario);
-                    
-                }
-                
-                
+                String[] campos = linea.split("\\|");
+                Usuario usuario = new Usuario();
+                usuario.setUserName(campos[0]);
+                usuario.setNombre(campos[1]);
+                usuario.setApellidoPaterno(campos[2]);
+                usuario.setApellidoMaterno(campos[3]);
+                usuario.setEmail(campos[4]);
+                usuario.setPassword(campos[5]);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                usuario.setFechaNacimiento(simpleDateFormat.parse(campos[6]));
+
+                char sexo = campos[7].charAt(0);
+                usuario.setSexo(sexo);
+
+                usuario.setTelefono(campos[8]);
+                usuario.setCelular(campos[9]);
+                usuario.setCurp(campos[10]);
+
+                usuario.Roll = new Roll();
+
+                int number = Integer.parseInt(campos[11]);
+                usuario.Roll.setIdRoll(number);
+
+                System.out.println("usuario : " + usuario.getNombre());
+                usuarios.add(usuario);
+
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
-        
+
         }
-        
+
         return usuarios;
-        
+
     }
-    
-    public List<ErrorCarga> ValidarCampos(List<Usuario> usuarios){
-    
+
+    public List<ErrorCarga> ValidarCampos(List<Usuario> usuarios) {
+
         List<ErrorCarga> erroresCarga = new ArrayList<>();
 
         int lineaError = 0;
@@ -295,20 +341,20 @@ public class UsuarioController {
                 ErrorCarga errorCarga = new ErrorCarga();
                 errorCarga.campo = fieldError.getField();
                 errorCarga.descripcion = fieldError.getDefaultMessage();
-                errorCarga.linea = lineaError;  
+                errorCarga.linea = lineaError;
                 erroresCarga.add(errorCarga);
 //                System.out.println(errorCarga.campo + "" + errorCarga.descripcion);
             }
 
         }
-         return erroresCarga;
+        return erroresCarga;
     }
-    
+
     @GetMapping("delete/{id}")
     public String Delete(@PathVariable("id") int id, Model model, RedirectAttributes redirectAttributes) {
 
         Result result = usuarioDAOImplementation.Delete(id);
-        redirectAttributes.addFlashAttribute("successDeleteMessage", result.object );
+        redirectAttributes.addFlashAttribute("successDeleteMessage", result.object);
         return "redirect:/usuario";
     }
 
@@ -316,7 +362,7 @@ public class UsuarioController {
     public String Form(@PathVariable("id") int id, Model model) {
         Result result = usuarioDAOImplementation.GetById(id);
         if (result.correct) {
-            
+
             model.addAttribute("usuario", result.object);
             model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
             model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
@@ -373,7 +419,7 @@ public class UsuarioController {
             BindingResult bindingResult,
             Model model, RedirectAttributes redirectAttributes,
             @RequestParam("imagenFile") MultipartFile imagenFile) {
-        
+
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("Usuario", usuario);
@@ -383,24 +429,19 @@ public class UsuarioController {
 
             return "UsuarioForm";
         }
-        
+
         if (imagenFile != null) {
 
             try {
 
-
                 //vuelvo a asegurarme que es jpg o png
-
-
                 String extension = imagenFile.getOriginalFilename().split("\\.")[1];
 
                 if (extension.equals("jpg") || extension.equals("png")) {
 
                     byte[] byteImagen = imagenFile.getBytes();
 
-
                     String imagenBase64 = Base64.getEncoder().encodeToString(byteImagen);
-
 
                     usuario.setImagen(imagenBase64);
 
@@ -410,13 +451,12 @@ public class UsuarioController {
 
                 Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
 
-
             }
 
         }
-       
+
         Result result = usuarioDAOImplementation.Add(usuario);
-        
+
         if (result.correct) {
 
             redirectAttributes.addFlashAttribute("successMessage", "El usuario " + usuario.getUserName() + "se creo con exito.");
@@ -427,53 +467,52 @@ public class UsuarioController {
         return "redirect:/usuario";
 
     }
-    
+
     @PostMapping("updateImagen")
-    public String UpdateImagen(@ModelAttribute("usuario") Usuario usuario){
-        
+    public String UpdateImagen(@ModelAttribute("usuario") Usuario usuario) {
+
         usuarioDAOImplementation.UpdateImagen(usuario);
-        
-        return "redirect:/usuario/detail/"+usuario.getIdUsuario();
+
+        return "redirect:/usuario/detail/" + usuario.getIdUsuario();
     }
 
     @PostMapping("actiondireccion/{idUsuario}")
-        public String ActionDireccion(@PathVariable("idUsuario") int idUsuario, @ModelAttribute("direccion") Direccion direccion,
+    public String ActionDireccion(@PathVariable("idUsuario") int idUsuario, @ModelAttribute("direccion") Direccion direccion,
             BindingResult bindingResult, Model model,
             RedirectAttributes redirectAttributes) {
-            
-            
-            model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
-            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-            
-            if (direccion.getIdDireccion() == 0) { // agregar direccion a usuario
-                
-                usuarioDAOImplementation.AddDireccion(direccion, idUsuario);
-                redirectAttributes.addFlashAttribute("successAddDireccionMessage", "Dirección agregada correctamente");
-                
-            } else { // editar la direccion a usuario
-                
-                usuarioDAOImplementation.UpdateDireccion(direccion, idUsuario);
-                redirectAttributes.addFlashAttribute("successUpdateDireccionMessage", "Dirección actualizada correctamente");
-            }
 
-            return "redirect:/usuario/detail/"+idUsuario;
-                    
+        model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
+        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+
+        if (direccion.getIdDireccion() == 0) { // agregar direccion a usuario
+
+            usuarioDAOImplementation.AddDireccion(direccion, idUsuario);
+            redirectAttributes.addFlashAttribute("successAddDireccionMessage", "Dirección agregada correctamente");
+
+        } else { // editar la direccion a usuario
+
+            usuarioDAOImplementation.UpdateDireccion(direccion, idUsuario);
+            redirectAttributes.addFlashAttribute("successUpdateDireccionMessage", "Dirección actualizada correctamente");
+        }
+
+        return "redirect:/usuario/detail/" + idUsuario;
+
     }
-        
+
     @GetMapping("direccion/{idDireccion}")
     @ResponseBody
-    public Result GetDireccionById(@PathVariable("idDireccion") int idDireccion, 
-            Model model){
-        
+    public Result GetDireccionById(@PathVariable("idDireccion") int idDireccion,
+            Model model) {
+
         return usuarioDAOImplementation.GetByIdDireccion(idDireccion);
-        
+
     }
-    
+
     @GetMapping("deleteDireccion/{idDireccion}")
     public String DeleteDireccion(@PathVariable("idDireccion") int idDireccion, Model model, RedirectAttributes redirectAttributes) {
 
         Result result = usuarioDAOImplementation.DeleteDireccion(idDireccion);
-        redirectAttributes.addFlashAttribute("successDeleteDireccionMessage", result.object );
+        redirectAttributes.addFlashAttribute("successDeleteDireccionMessage", result.object);
         return "redirect:/usuario";
     }
 
@@ -483,14 +522,12 @@ public class UsuarioController {
         return estadoImplementation.GetByIdPais(idPais);
     }
 
-
     @GetMapping("municipio/{idEstado}")
     @ResponseBody
     public Result GetMunicipioByEstado(@PathVariable("idEstado") int idEstado) {
 
         return municipioImplementation.GetByIdEstado(idEstado);
     }
-
 
     @GetMapping("colonia/{idMunicipio}")
     @ResponseBody

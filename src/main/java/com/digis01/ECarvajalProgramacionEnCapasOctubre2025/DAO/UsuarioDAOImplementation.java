@@ -11,10 +11,12 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -584,61 +586,52 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
         
         return result;
     }
-
+    
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result AddWithoutDireccion(Usuario usuario) {
-            Result result = jdbcTemplate.execute("{CALL UsuarioAdd(?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Result>) callableStatement -> {
-            Result resultSP = new Result();
-            try{
-                
-                callableStatement.setString(1, usuario.getUserName());
-                callableStatement.setString(2, usuario.getNombre());
-                callableStatement.setString(3, usuario.getApellidoPaterno());
-                callableStatement.setString(4, usuario.getApellidoMaterno());
-                callableStatement.setString(5, usuario.getEmail());
-                callableStatement.setString(6, usuario.getPassword());
+    public Result AddAll(List<Usuario> usuarios) {
+        Result result = new Result();
+
+        try{
+
+          jdbcTemplate.batchUpdate("{CALL UsuarioAdd(?,?,?,?,?,?,?,?,?,?,?,?)}",
+                  usuarios,
+                  usuarios.size(),
+                  (callableStatement, usuario) -> {
+
+                      callableStatement.setString(1, usuario.getUserName());
+                      callableStatement.setString(2, usuario.getNombre());
+                      callableStatement.setString(3, usuario.getApellidoPaterno());
+                      callableStatement.setString(4, usuario.getApellidoMaterno());
+                      callableStatement.setString(5, usuario.getEmail());
+                      callableStatement.setString(6, usuario.getPassword());
 
 
 
-                callableStatement.setDate(7, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
+                      callableStatement.setDate(7, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
 
-                String sexo ;
-                sexo = Character.toString(usuario.getSexo());
+                      String sexo ;
+                      sexo = Character.toString(usuario.getSexo());
 
-                callableStatement.setString(8, sexo);
-                callableStatement.setString(9, usuario.getTelefono());
-                callableStatement.setString(10, usuario.getCelular());
-                callableStatement.setString(11, usuario.getCurp());
-                callableStatement.setInt(12, usuario.Roll.getIdRoll());
-                
-                
-                int rowAffected = callableStatement.executeUpdate();
-            
-                if(rowAffected > 0){
+                      callableStatement.setString(8, sexo);
+                      callableStatement.setString(9, usuario.getTelefono());
+                      callableStatement.setString(10, usuario.getCelular());
+                      callableStatement.setString(11, usuario.getCurp());
+                      callableStatement.setInt(12, usuario.Roll.getIdRoll());
 
-                    resultSP.correct = true;
-                    System.out.println("Se inserto correctamente");
-                   
-                }else{
+                  });
 
-                    resultSP.correct = false;
-                    resultSP.errorMessage = "No se pudo insertar el usuario y direccion";
-                    System.out.println("Se no inserto correctamente");
-                }
-            
-            
-                
-            }catch(Exception ex) {
-            
-                resultSP.correct = false;
-                resultSP.errorMessage = ex.getLocalizedMessage();
-                resultSP.ex = ex;
-            }
-            
-            return resultSP;
-        });
-        
-        return result;
+                  result.correct =  true;
+
+
+        }catch(Exception ex) {
+
+          result.correct = false;
+          result.errorMessage = ex.getLocalizedMessage();
+          result.ex = ex;
+          }
+
+        return result;          
     }
     
     

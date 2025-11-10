@@ -4,6 +4,7 @@ package com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Direccion;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
+import java.util.List;
 
 
 
@@ -20,6 +21,6 @@ public interface IUsuarioDAO {
     Result DeleteDireccion(int idDireccion);
     Result GetByIdDireccion(int IdDireccion);
     Result UpdateImagen(Usuario usuario);
-    Result AddWithoutDireccion(Usuario usuario);
+    Result AddAll(List<Usuario> usuarios);
     }
 ;
