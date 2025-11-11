@@ -1,6 +1,5 @@
 package com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA;
-
-import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,8 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "USUARIO")
@@ -62,6 +64,9 @@ public class UsuarioJPA {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idroll", nullable = true)
     public RollJPA RollJPA;
+    
+    @OneToMany(mappedBy = "UsuarioJPA", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<DireccionJPA> DireccionesJPA = new ArrayList<>();
     
     
 //    public List<Direccion> Direccion;
@@ -189,12 +194,23 @@ public class UsuarioJPA {
     }
     
     
-     public RollJPA getRollJPA() {
+    public RollJPA getRollJPA() {
         return RollJPA;
     }
 
     public void setRollJPA(RollJPA RollJPA) {
         this.RollJPA = RollJPA;
+    }
+    
+    public void setDireccionesJPA( List<DireccionJPA> DireccionesJPA){
+        
+        this.DireccionesJPA = DireccionesJPA;
+    
+    }
+    public List<DireccionJPA>  getDireccionesJPA(){
+    
+        return DireccionesJPA;
+        
     }
 
     

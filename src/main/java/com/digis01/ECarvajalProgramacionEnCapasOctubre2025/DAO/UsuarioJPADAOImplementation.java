@@ -1,6 +1,9 @@
 package com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO;
 
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.DireccionJPA;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.UsuarioJPA;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Colonia;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Direccion;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
@@ -54,6 +57,32 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                 } else {
                     usuarioML.Roll = new Roll();
                     usuarioML.Roll.setIdRoll(usuarioJPA.getRollJPA().getIdRoll());
+                }
+                
+                if(usuarioJPA.getDireccionesJPA() == null) {
+                    usuarioML.Direccion = null;
+                } else {
+                    
+                    usuarioML.Direccion = new ArrayList<Direccion>();
+                    int i = 0;
+                    
+                    for(DireccionJPA direccionJPA : usuarioJPA.getDireccionesJPA()){
+                        
+                        Direccion direccionML =  new Direccion();
+                        direccionML.Colonia = new Colonia();
+                        usuarioML.Direccion.add(direccionML);
+                        usuarioML.Direccion.get(i).setIdDireccion(direccionJPA.getIdDireccion());
+                        usuarioML.Direccion.get(i).setCalle(direccionJPA.getCalle());
+                        usuarioML.Direccion.get(i).setNumeroInterior(direccionJPA.getNumeroInterior());
+                        usuarioML.Direccion.get(i).setNumeroExterior(direccionJPA.getNumeroExterior());
+                        usuarioML.Direccion.get(i).Colonia.setIdColonia(direccionJPA.getColoniaJPA().getIdColonia());
+                        usuarioML.Direccion.get(i).Colonia.setNombre(direccionJPA.getColoniaJPA().getNombre());
+                        usuarioML.Direccion.get(i).Colonia.setCodigoPostal(direccionJPA.getColoniaJPA().getCodigoPostal());
+                        
+                        
+                        i++;
+                    }
+                
                 }
                 
                 result.objects.add(usuarioML);
