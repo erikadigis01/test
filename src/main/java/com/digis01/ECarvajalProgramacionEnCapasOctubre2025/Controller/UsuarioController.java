@@ -411,6 +411,7 @@ public class UsuarioController {
         model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
 
         model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+        model.addAttribute("direccion", new Direccion());
         return "UsuarioForm";
     }
 
@@ -426,6 +427,7 @@ public class UsuarioController {
 
             model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
             model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("direccion", new Direccion());
 
             return "UsuarioForm";
         }
@@ -468,8 +470,8 @@ public class UsuarioController {
 
     }
 
-    @PostMapping("updateImagen")
-    public String UpdateImagen(@ModelAttribute("usuario") Usuario usuario) {
+    @PostMapping("/updateImagen/{usuario}")
+    public String UpdateImagen(@PathVariable("usuario") Usuario usuario) {
 
         usuarioDAOImplementation.UpdateImagen(usuario);
 
