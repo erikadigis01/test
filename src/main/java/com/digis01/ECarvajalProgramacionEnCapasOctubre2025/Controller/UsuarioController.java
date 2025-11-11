@@ -6,6 +6,7 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO.MunicipioDAOImple
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO.PaisDAOImplementation;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO.UsuarioDAOImplementation;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO.RollDAOImplementation;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO.UsuarioJPADAOImplementation;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Direccion;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.ErrorCarga;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
@@ -82,10 +83,14 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioTransaccion usuarioTransaccion;
+    
+    @Autowired
+    private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
 
     @GetMapping
     public String Index(Model model) {
         Result result = usuarioDAOImplementation.GetAll();
+        Result resultJPA = usuarioJPADAOImplementation.GetAll();
         model.addAttribute("usuarios", result.objects);
         model.addAttribute("errores", new ArrayList<>());
         model.addAttribute("isCorrect", false);
