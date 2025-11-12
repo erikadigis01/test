@@ -23,7 +23,7 @@ public class EstadoJPA {
     
     @ManyToOne
     @JoinColumn(name = "idpais")
-    public PaisJPA PaisJPA;
+    public PaisJPA Pais;
     
     public EstadoJPA(){
     
@@ -51,12 +51,12 @@ public class EstadoJPA {
         return Nombre;
     }
 
-    public PaisJPA getPaisJPA() {
-        return PaisJPA;
+    public PaisJPA getPais() {
+        return Pais;
     }
 
-    public void setPais(PaisJPA PaisJPA) {
-        this.PaisJPA = PaisJPA;
+    public void setPais(PaisJPA Pais) {
+        this.Pais = Pais;
     }
     
 }

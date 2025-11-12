@@ -23,7 +23,7 @@ public class MunicipioJPA {
     
     @ManyToOne
     @JoinColumn(name = "idestado")
-    public EstadoJPA EstadoJPA;
+    public EstadoJPA Estado;
 
     public MunicipioJPA(){
     
@@ -49,12 +49,12 @@ public class MunicipioJPA {
         return Nombre;
     }
 
-    public EstadoJPA getEstadoJPA() {
-        return EstadoJPA;
+    public EstadoJPA getEstado() {
+        return Estado;
     }
 
-    public void setEstadoJPA(EstadoJPA EstadoJPA) {
-        this.EstadoJPA = EstadoJPA;
+    public void setEstado(EstadoJPA Estado) {
+        this.Estado = Estado;
     }
     
 }

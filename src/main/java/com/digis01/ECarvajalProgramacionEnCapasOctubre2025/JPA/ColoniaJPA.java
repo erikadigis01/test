@@ -26,7 +26,7 @@ public class ColoniaJPA {
     
     @ManyToOne
     @JoinColumn(name = "idmunicipio")
-    public MunicipioJPA MunicipioJPA;
+    public MunicipioJPA Municipio;
     
     //Constructor 
     
@@ -60,12 +60,12 @@ public class ColoniaJPA {
     public String getCodigoPostal(){
         return CodigoPostal;
     }
-    public MunicipioJPA getMunicipioJPA() {
-        return MunicipioJPA;
+    public MunicipioJPA getMunicipio() {
+        return Municipio;
     }
 
-    public void setMunicipioJPA(MunicipioJPA MunicipioJPA) {
-        this.MunicipioJPA = MunicipioJPA;
+    public void setMunicipio(MunicipioJPA Municipio) {
+        this.Municipio = Municipio;
     }
     
 }

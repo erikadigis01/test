@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Table(name  = "DIRECCION")
@@ -31,9 +33,10 @@ public class DireccionJPA {
     
     @ManyToOne
     @JoinColumn(name = "idcolonia")
-    public ColoniaJPA ColoniaJPA;
+    public ColoniaJPA Colonia;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "idusuario")
     public UsuarioJPA UsuarioJPA;
     
@@ -75,12 +78,12 @@ public class DireccionJPA {
     public String getNumeroExterior(){
         return NumeroExterior;
     }
-    public ColoniaJPA getColoniaJPA() {
-        return ColoniaJPA;
+    public ColoniaJPA getColonia() {
+        return Colonia;
     }
 
-    public void setColoniaJPA(ColoniaJPA ColoniaJPA) {
-        this.ColoniaJPA = ColoniaJPA;
+    public void setColonia(ColoniaJPA Colonia) {
+        this.Colonia = Colonia;
     }
 
 }

@@ -151,7 +151,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             </div>
                             <div class="col-4">
                                 <label for="estado" class="form-label">Estado</label>
-                               <select id="ddlestado" class="form-select" aria-label="Default select example" th:field = "*{Direccion[0].Colonia.Municipio.Estado.IdEstado}">
+                                <select id="ddlestado" class="form-select" aria-label="Default select example" th:field = "*{Direccion[0].Colonia.Municipio.Estado.IdEstado}">
                                     <option value=0 selected>Selecciona un estado</option>
                                 </select>
                             </div>
@@ -195,7 +195,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                     <div class="py-3 h6 text-black-50"> Foto</div>
                     <div  class="d-grid gap-2">
-                         <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile" accept="image/*">
+                        <img  src="https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg"
+                                     alt="Foto de perfil" class="profile-img mx-auto mb-3 " id="Idimagen" width="72">
+                        <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile" accept="image/*" onchange="displaySelectedImage(event, 'Idimagen')">
                     </div>
                     <div class="row my-1 py-3 ">
                         <div class="col-6 d-grid gap-2">
@@ -209,31 +211,47 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>  
         </main>
         <footer></footer>
-    </body>
-    <script th:inline="javascript">
-        
-        $(document).ready(function () {
-            $("#ddlpais").change(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: "/usuario/estado/" + $("#ddlpais").val(),
-                    dataType: "json",
-                    success: function (data, textStatus, jqXHR) {
+        <script>
+            function displaySelectedImage(event, elementId) {
+            const selectedImage = document.getElementById(elementId);
+            const fileInput = event.target;
 
-                        $("#ddlestado").empty();
-                        $("#ddlestado").append("<option value=0 selected>Selecciona un estado</option>");
-                        $.each(data.objects, function (i, estado) {
-                            $("#ddlestado").append("<option value= " + estado.idEstado + "> " + estado.nombre + "</option>");
-                        });
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
 
-                    },
-                
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        alert("no hay nada por cargar :/");
-                    }
+                reader.onload = function(e) {
+                    selectedImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+            $(document).ready(function () {
+                $("#ddlpais").change(function () {
+                    $.ajax({
+                        type: 'GET',
+                        url: "/usuario/estado/" + $("#ddlpais").val(),
+                        dataType: "json",
+                        success: function (data, textStatus, jqXHR) {
+
+                            $("#ddlestado").empty();
+                            $("#ddlestado").append("<option value=0 selected>Selecciona un estado</option>");
+                            $.each(data.objects, function (i, estado) {
+                                $("#ddlestado").append("<option value= " + estado.idEstado + "> " + estado.nombre + "</option>");
+                            });
+
+                        },
+
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert("no hay nada por cargar :/");
+                        }
+                    });
                 });
+
+
             });
-            
+
             $("#ddlestado").change(function () {
                 $.ajax({
                     type: 'GET',
@@ -252,7 +270,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     }
                 });
             });
-            
+
             $("#ddlmunicipio").change(function () {
                 $.ajax({
                     type: 'GET',
@@ -263,7 +281,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         $("#ddlcolonia").empty();
                         $("#ddlcolonia").append("<option value = 0 selected> Selecciona una colonia</option>");
                         $.each(data.objects, function (i, colonia) {
-                            $("#ddlcolonia").append("<option value= " + colonia.idColonia + " data-cp=" + colonia.codigoPostal+"> " + colonia.nombre + "</option>");
+                            $("#ddlcolonia").append("<option value= " + colonia.idColonia + " data-cp=" + colonia.codigoPostal + "> " + colonia.nombre + "</option>");
                             //alert(colonia.codigoPostal);
                         });
                     },
@@ -272,14 +290,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     }
                 });
             });
-            
+
             $("#ddlcolonia").change(function () {
-                
+
                 $("#codigoPostal").empty();
-                $("#codigoPostal").val($("#ddlcolonia option:selected").data("cp") ) ;
+                $("#codigoPostal").val($("#ddlcolonia option:selected").data("cp"));
             });
-        });
-        
+
 //        function isSoloLetras(event, input) {
 //
 //            let value = $(input).val();
@@ -335,7 +352,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 //            }
 //
 //        }
-        
+
 //        function isEmail(event, input) {
 //
 //            let value = $(input).val();
@@ -353,7 +370,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 //            }
 //
 //        }
-        
+
 //        function isPassword(event, input) {
 //
 //            let value = $(input).val();
@@ -370,7 +387,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 //            }
 //
 //        }
-        
+
 //        function isNumber(event, input) {
 //
 //            let value = $(input).val();
@@ -386,7 +403,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 //                event.preventDefault();
 //            }
 //        }
-        
+
 //        function isCorrectDate(event, input) {
 //
 //            let value = $(input).val();
@@ -403,5 +420,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 //            }
 //
 //        }
-    </script>
+        </script>
+    </body>
+
 </html>

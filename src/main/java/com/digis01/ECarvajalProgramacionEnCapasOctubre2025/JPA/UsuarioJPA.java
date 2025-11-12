@@ -63,22 +63,21 @@ public class UsuarioJPA {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idroll", nullable = true)
-    public RollJPA RollJPA;
+    public RollJPA Roll;
     
     @OneToMany(mappedBy = "UsuarioJPA", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DireccionJPA> DireccionesJPA;
+    public List<DireccionJPA> Direccion = new ArrayList<>();
     
     
-//    public List<Direccion> Direccion;
     
     //Constructores 
     public UsuarioJPA(){
     
     }
     
-    public UsuarioJPA(
-            int IdUsuario, String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, 
-           String Password, Date FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp, String Imagen ){
+    public UsuarioJPA( int IdUsuario, String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, 
+
+        String Password, Date FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp, String Imagen){
         
         this.IdUsuario = IdUsuario;
         this.UserName = UserName;
@@ -194,22 +193,22 @@ public class UsuarioJPA {
     }
     
     
-    public RollJPA getRollJPA() {
-        return RollJPA;
+    public RollJPA getRoll() {
+        return Roll;
     }
 
-    public void setRollJPA(RollJPA RollJPA) {
-        this.RollJPA = RollJPA;
+    public void setRoll(RollJPA Roll) {
+        this.Roll = Roll;
     }
     
-    public void setDireccionesJPA( List<DireccionJPA> DireccionesJPA){
+    public void setDireccion( List<DireccionJPA> Direccion){
         
-        this.DireccionesJPA = DireccionesJPA;
+        this.Direccion = Direccion;
     
     }
-    public List<DireccionJPA>  getDireccionesJPA(){
+    public List<DireccionJPA>  getDireccion(){
     
-        return DireccionesJPA;
+        return Direccion;
         
     }
 

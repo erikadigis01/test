@@ -50,7 +50,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                 Usuario usuarioML = modelMapper.map(usuarioJPA, Usuario.class);
                 usuarioML.Direccion =  new ArrayList<Direccion>();
                 
-                for(DireccionJPA direccionJPA : usuarioJPA.getDireccionesJPA()){
+                for(DireccionJPA direccionJPA : usuarioJPA.getDireccion()){
                  
                     Direccion direccionML =  new Direccion();
                     
@@ -87,48 +87,19 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
      
      try {
          
-         UsuarioJPA usuarioJPA =  new UsuarioJPA();
+        UsuarioJPA usuarioJPA =  new UsuarioJPA();
+        
+        
+        
+        
+        usuarioJPA = modelMapper.map(usuarioML, UsuarioJPA.class);
+        usuarioJPA.Direccion.get(0).UsuarioJPA = usuarioJPA;
+        entityManager.persist(usuarioJPA);
+        
+        
+        result.correct =  true;
          
-         usuarioJPA.setUserName(usuarioML.getUserName());
-         usuarioJPA.setNombre(usuarioML.getNombre());
-         usuarioJPA.setApellidoPaterno(usuarioML.getApellidoPaterno());
-         usuarioJPA.setApellidoMaterno(usuarioML.getApellidoMaterno());
-         usuarioJPA.setEmail(usuarioML.getEmail());
-         usuarioJPA.setPassword(usuarioML.getPassword());
-         usuarioJPA.setFechaNacimiento(usuarioML.getFechaNacimiento());
-         usuarioJPA.setTelefono(usuarioML.getTelefono());
-         usuarioJPA.setCelular(usuarioML.getCelular());
-         usuarioJPA.setCurp(usuarioML.getCurp());
-         usuarioJPA.setImagen(usuarioML.getImagen());
-         usuarioJPA.RollJPA = new RollJPA();
-         usuarioJPA.RollJPA.setIdRoll(usuarioML.getRoll().getIdRoll());
-         usuarioJPA.RollJPA.setNombreRoll(usuarioML.getRoll().getNombreRoll());
-         
-         entityManager.persist(usuarioJPA);
-         result.correct =  true;
-         
-//         try{
-//             
-//            entityTransaction =  entityManager.getTransaction();
-//            entityTransaction.begin();
-//            entityManager.persist(usuarioJPA);
-//            entityTransaction.commit();
-//            result.correct =  true;
-//            
-//         } catch (Exception ex) {
-//             
-//             if(entityTransaction != null){
-//             
-//                entityTransaction.rollback();
-//                
-//             }
-//             
-//             result.correct =  false;
-//             result.correct = false;
-//             result.errorMessage = ex.getLocalizedMessage();
-//             result.ex = ex;
-//         
-//         }
+    
           
      } catch(Exception ex) {
      

@@ -85,7 +85,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     <i class="bi bi-telephone-fill"></i>
                                     Contacto
                                 </th>
-                                <th scope="col" class="text-black-50">Roll</th>
+                                <th scope="col-1" class="text-black-50">Roll</th>
                                 <th scope="col" class="text-black-50">Accion</th>
                             </tr>
                         </thead>
@@ -114,11 +114,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     <div class="badge text-bg-secondary"><span th:text="${usuario.Roll.NombreRoll}"></span></div>
                                 </td>
                                 <td class=" col-3">
-                                    <a type="button" class="btn btn-primary " th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"> 
+                                    <a type="button" class="btn btn-primary btn-sm" th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"> 
                                         <i class="bi bi-pencil-square"></i>
                                         Editar
                                     </a>
-                                    <button type="button" class="btn btn-danger" th:onclick="|confirmarEliminacionUsuario(${usuario.IdUsuario})|"> 
+                                    <button type="button" class="btn btn-danger btn-sm" th:onclick="|confirmarEliminacionUsuario(${usuario.IdUsuario})|"> 
                                         <i class="bi bi-trash3-fill"> Eliminar</i>
                                     </button>
                                 </td>
