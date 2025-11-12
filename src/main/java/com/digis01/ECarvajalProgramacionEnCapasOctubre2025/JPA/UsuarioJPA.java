@@ -66,7 +66,7 @@ public class UsuarioJPA {
     public RollJPA RollJPA;
     
     @OneToMany(mappedBy = "UsuarioJPA", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DireccionJPA> DireccionesJPA = new ArrayList<>();
+    public List<DireccionJPA> DireccionesJPA;
     
     
 //    public List<Direccion> Direccion;

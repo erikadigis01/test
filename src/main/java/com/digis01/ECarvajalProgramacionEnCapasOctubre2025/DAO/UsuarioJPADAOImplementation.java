@@ -16,6 +16,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,9 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
     
     @Autowired
     private EntityManager entityManager;
+    
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Result GetAll() {
@@ -35,75 +39,27 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
             
             TypedQuery<UsuarioJPA> queryUsuario = entityManager.createQuery("FROM UsuarioJPA", UsuarioJPA.class);
             
+            //Resultado del JPA
             List<UsuarioJPA> usuariosJPA = queryUsuario.getResultList();
             
-            List<Usuario> usuariosML = new ArrayList<>();
-            
+            //en donde se debe guardar
             result.objects = new ArrayList<>();
             
             for(UsuarioJPA usuarioJPA : usuariosJPA) {
             
-                Usuario usuarioML = new Usuario();
-                usuarioML.setIdUsuario(usuarioJPA.getIdUsuario());
-                usuarioML.setUserName(usuarioJPA.getUserName());
-                usuarioML.setNombre(usuarioJPA.getNombre());
-                usuarioML.setApellidoPaterno(usuarioJPA.getApellidoPaterno());
-                usuarioML.setApellidoMaterno(usuarioJPA.getApellidoMaterno());
-                usuarioML.setEmail(usuarioJPA.getEmail());
-                usuarioML.setPassword(usuarioJPA.getPassword());
-                usuarioML.setFechaNacimiento(usuarioJPA.getFechaNacimiento());
-                usuarioML.setSexo(usuarioJPA.getSexo());
-                usuarioML.setTelefono(usuarioJPA.getTelefono());
-                usuarioML.setCelular(usuarioJPA.getCelular());
-                usuarioML.setCurp(usuarioJPA.getCurp());
-                usuarioML.setImagen(usuarioJPA.getImagen());
+                Usuario usuarioML = modelMapper.map(usuarioJPA, Usuario.class);
+                usuarioML.Direccion =  new ArrayList<Direccion>();
                 
-                if(usuarioJPA.getRollJPA() == null) {
-                    usuarioML.Roll = null;
-                } else {
-                    usuarioML.Roll = new Roll();
-                    usuarioML.Roll.setIdRoll(usuarioJPA.getRollJPA().getIdRoll());
-                    usuarioML.Roll.setNombreRoll(usuarioJPA.getRollJPA().getNombreRoll());
-                }
-                
-                if(usuarioJPA.getDireccionesJPA() == null) {
-                    usuarioML.Direccion = null;
-                } else {
+                for(DireccionJPA direccionJPA : usuarioJPA.getDireccionesJPA()){
+                 
+                    Direccion direccionML =  new Direccion();
                     
-                    usuarioML.Direccion = new ArrayList<Direccion>();
-                    int i = 0;
+                    direccionML = modelMapper.map(direccionJPA, Direccion.class);
                     
-                    for(DireccionJPA direccionJPA : usuarioJPA.getDireccionesJPA()){
-                        
-                        Direccion direccionML =  new Direccion();
-                        direccionML.Colonia = new Colonia();
-                        direccionML.Colonia.Municipio = new Municipio();
-                        direccionML.Colonia.Municipio.Estado = new Estado();
-                        direccionML.Colonia.Municipio.Estado.Pais = new Pais();
-                        usuarioML.Direccion.add(direccionML);
-                        usuarioML.Direccion.get(i).setIdDireccion(direccionJPA.getIdDireccion());
-                        usuarioML.Direccion.get(i).setCalle(direccionJPA.getCalle());
-                        usuarioML.Direccion.get(i).setNumeroInterior(direccionJPA.getNumeroInterior());
-                        usuarioML.Direccion.get(i).setNumeroExterior(direccionJPA.getNumeroExterior());
-                        usuarioML.Direccion.get(i).Colonia.setIdColonia(direccionJPA.getColoniaJPA().getIdColonia());
-                        usuarioML.Direccion.get(i).Colonia.setNombre(direccionJPA.getColoniaJPA().getNombre());
-                        usuarioML.Direccion.get(i).Colonia.setCodigoPostal(direccionJPA.getColoniaJPA().getCodigoPostal());
-                        usuarioML.Direccion.get(i).Colonia.Municipio.setIdMunicipio(direccionJPA.getColoniaJPA().getMunicipioJPA().getIdMunicipio());
-                        usuarioML.Direccion.get(i).Colonia.Municipio.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getNombre());
-                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.setIdEstado(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getIdEstado());
-                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getNombre());
-                        
-                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.Pais.setIdPais(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getPaisJPA().getIdPais());
-                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.Pais.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getPaisJPA().getNombre());
-                        
-                        
-                        
-                        i++;
-                        
-                    }
-                
+                    usuarioML.Direccion.add(direccionML);
+                 
                 }
-                
+
                 result.objects.add(usuarioML);
            
             }

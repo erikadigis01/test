@@ -91,7 +91,7 @@ public class UsuarioController {
     public String Index(Model model) {
         Result result = usuarioDAOImplementation.GetAll();
         Result resultJPA = usuarioJPADAOImplementation.GetAll();
-        model.addAttribute("usuarios", result.objects);
+        model.addAttribute("usuarios", resultJPA.objects);
         model.addAttribute("errores", new ArrayList<>());
         model.addAttribute("isCorrect", false);
 
