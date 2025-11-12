@@ -4,6 +4,9 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.DireccionJPA;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.UsuarioJPA;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Colonia;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Direccion;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Estado;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Municipio;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Pais;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
@@ -70,6 +73,9 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                         
                         Direccion direccionML =  new Direccion();
                         direccionML.Colonia = new Colonia();
+                        direccionML.Colonia.Municipio = new Municipio();
+                        direccionML.Colonia.Municipio.Estado = new Estado();
+                        direccionML.Colonia.Municipio.Estado.Pais = new Pais();
                         usuarioML.Direccion.add(direccionML);
                         usuarioML.Direccion.get(i).setIdDireccion(direccionJPA.getIdDireccion());
                         usuarioML.Direccion.get(i).setCalle(direccionJPA.getCalle());
@@ -78,9 +84,18 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                         usuarioML.Direccion.get(i).Colonia.setIdColonia(direccionJPA.getColoniaJPA().getIdColonia());
                         usuarioML.Direccion.get(i).Colonia.setNombre(direccionJPA.getColoniaJPA().getNombre());
                         usuarioML.Direccion.get(i).Colonia.setCodigoPostal(direccionJPA.getColoniaJPA().getCodigoPostal());
+                        usuarioML.Direccion.get(i).Colonia.Municipio.setIdMunicipio(direccionJPA.getColoniaJPA().getMunicipioJPA().getIdMunicipio());
+                        usuarioML.Direccion.get(i).Colonia.Municipio.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getNombre());
+                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.setIdEstado(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getIdEstado());
+                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getNombre());
+                        
+                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.Pais.setIdPais(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getPaisJPA().getIdPais());
+                        usuarioML.Direccion.get(i).Colonia.Municipio.Estado.Pais.setNombre(direccionJPA.getColoniaJPA().getMunicipioJPA().getEstadoJPA().getPaisJPA().getNombre());
+                        
                         
                         
                         i++;
+                        
                     }
                 
                 }

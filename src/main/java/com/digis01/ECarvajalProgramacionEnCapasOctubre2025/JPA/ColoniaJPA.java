@@ -25,7 +25,7 @@ public class ColoniaJPA {
     private String CodigoPostal;
     
     @ManyToOne
-    @JoinColumn(name = "idmunipio")
+    @JoinColumn(name = "idmunicipio")
     public MunicipioJPA MunicipioJPA;
     
     //Constructor 

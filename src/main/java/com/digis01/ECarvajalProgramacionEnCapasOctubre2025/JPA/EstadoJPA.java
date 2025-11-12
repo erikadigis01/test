@@ -10,51 +10,53 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "MUNICIPIO")
-public class MunicipioJPA {
+@Table(name = "ESTADO")
+public class EstadoJPA {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idmunicipio", nullable = false)
-    private int IdMunicipio;
+    @Column(name = "idestado", nullable = false)
+    private int IdEstado;
     
     @Column(name = "nombre", nullable = false)
     private String Nombre;
     
     @ManyToOne
-    @JoinColumn(name = "idestado")
-    public EstadoJPA EstadoJPA;
-
-    public MunicipioJPA(){
+    @JoinColumn(name = "idpais")
+    public PaisJPA PaisJPA;
+    
+    public EstadoJPA(){
     
     }
     
-    public MunicipioJPA(int IdMunicipio, String Nombre){
+    public EstadoJPA(int IdEstado, String Nombre){
     
-        this.IdMunicipio = IdMunicipio;
+        this.IdEstado = IdEstado;
         this.Nombre = Nombre;
     }
     
-    public void setIdMunicipio(int IdMunicipio){
-        this.IdMunicipio = IdMunicipio;
+    public void setIdEstado(int IdEstado){
+    
+        this.IdEstado = IdEstado;
     }
-    public int getIdMunicipio(){
-        return IdMunicipio;
+    public int getIdEstado(){
+        return IdEstado;
     }
     
     public void setNombre(String Nombre){
+    
         this.Nombre = Nombre;
     }
     public String getNombre(){
         return Nombre;
     }
 
-    public EstadoJPA getEstadoJPA() {
-        return EstadoJPA;
+    public PaisJPA getPaisJPA() {
+        return PaisJPA;
     }
 
-    public void setEstadoJPA(EstadoJPA EstadoJPA) {
-        this.EstadoJPA = EstadoJPA;
+    public void setPais(PaisJPA PaisJPA) {
+        this.PaisJPA = PaisJPA;
     }
     
 }
