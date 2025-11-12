@@ -362,10 +362,11 @@ public class UsuarioController {
         redirectAttributes.addFlashAttribute("successDeleteMessage", result.object);
         return "redirect:/usuario";
     }
-
+    
+    //con JPA
     @GetMapping("detail/{id}")
     public String Form(@PathVariable("id") int id, Model model) {
-        Result result = usuarioDAOImplementation.GetById(id);
+        Result result = usuarioJPADAOImplementation.GetById(id);
         if (result.correct) {
 
             model.addAttribute("usuario", result.object);

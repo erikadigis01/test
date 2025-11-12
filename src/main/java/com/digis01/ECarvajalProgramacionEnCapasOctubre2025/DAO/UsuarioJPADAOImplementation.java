@@ -13,6 +13,7 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +111,58 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
      }
      
      return result;
+    }
+
+    @Override
+    public Result GetById(int Id) {
+        
+        Result result = new Result();
+         
+        try {
+        
+            TypedQuery<UsuarioJPA> queryUsuario = entityManager.createQuery("FROM UsuarioJPA  WHERE IdUsuario = :Id", UsuarioJPA.class);
+            
+            queryUsuario.setParameter("Id", Id);
+            
+            try {
+            
+                UsuarioJPA usuarioJPA = queryUsuario.getSingleResult();
+                
+                Usuario usuarioML = modelMapper.map(usuarioJPA, Usuario.class);
+                usuarioML.Direccion =  new ArrayList<Direccion>();
+                
+                for(DireccionJPA direccionJPA : usuarioJPA.getDireccion()){
+                 
+                    Direccion direccionML =  new Direccion();
+                    
+                    direccionML = modelMapper.map(direccionJPA, Direccion.class);
+                    
+                    usuarioML.Direccion.add(direccionML);
+                 
+                }
+                
+                result.object = usuarioML;
+                
+                result.correct = true;
+                
+            
+            } catch (NoResultException ex) {
+            
+                result.correct = false;
+                result.errorMessage = ex.getLocalizedMessage();
+                result.ex = ex;
+            }
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
     }
 
 }

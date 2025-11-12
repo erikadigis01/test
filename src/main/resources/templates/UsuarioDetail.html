@@ -422,17 +422,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 reader.onload = function(e) {
                     selectedImage.src = e.target.result;
-//                    $.ajax({
-//                        url:"/usuario/updateImagen"+ usuario,
-//                        type:"POST",
-//                        success: function(data, textStatus, jqXHR){
-//                            $("#Idimagen").attr('src', usuario.Imagen);
-//                        }
-//                        ,
-//                        error: function (jqXHR, textStatus, errorThrown) {
-//                                alert("no hay nada por cargar :/");
-//                        }
-//                    });
+                    $.ajax({
+                        url:"/usuario/updateImagen"+ usuario,
+                        type:"POST",
+                        success: function(data, textStatus, jqXHR){
+                            $("#Idimagen").attr('src', usuario.Imagen);
+                        }
+                        ,
+                        error: function (jqXHR, textStatus, errorThrown) {
+                                alert("no hay nada por cargar :/");
+                        }
+                    });
                     alert(usuario.Imagen);
                 };
 
