@@ -1,6 +1,7 @@
 package com.digis01.ECarvajalProgramacionEnCapasOctubre2025.DAO;
 
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.DireccionJPA;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.RollJPA;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.JPA.UsuarioJPA;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Colonia;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Direccion;
@@ -11,11 +12,13 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsuarioJPADAOImplementation implements IUsuarioJPA{
@@ -60,6 +63,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                 } else {
                     usuarioML.Roll = new Roll();
                     usuarioML.Roll.setIdRoll(usuarioJPA.getRollJPA().getIdRoll());
+                    usuarioML.Roll.setNombreRoll(usuarioJPA.getRollJPA().getNombreRoll());
                 }
                 
                 if(usuarioJPA.getDireccionesJPA() == null) {
@@ -116,6 +120,69 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         
         return result;
         
+    }
+
+    @Override
+    @Transactional
+    public Result Add(Usuario usuarioML) {
+     Result result =  new Result();
+     
+     EntityTransaction entityTransaction = null;
+     
+     try {
+         
+         UsuarioJPA usuarioJPA =  new UsuarioJPA();
+         
+         usuarioJPA.setUserName(usuarioML.getUserName());
+         usuarioJPA.setNombre(usuarioML.getNombre());
+         usuarioJPA.setApellidoPaterno(usuarioML.getApellidoPaterno());
+         usuarioJPA.setApellidoMaterno(usuarioML.getApellidoMaterno());
+         usuarioJPA.setEmail(usuarioML.getEmail());
+         usuarioJPA.setPassword(usuarioML.getPassword());
+         usuarioJPA.setFechaNacimiento(usuarioML.getFechaNacimiento());
+         usuarioJPA.setTelefono(usuarioML.getTelefono());
+         usuarioJPA.setCelular(usuarioML.getCelular());
+         usuarioJPA.setCurp(usuarioML.getCurp());
+         usuarioJPA.setImagen(usuarioML.getImagen());
+         usuarioJPA.RollJPA = new RollJPA();
+         usuarioJPA.RollJPA.setIdRoll(usuarioML.getRoll().getIdRoll());
+         usuarioJPA.RollJPA.setNombreRoll(usuarioML.getRoll().getNombreRoll());
+         
+         entityManager.persist(usuarioJPA);
+         result.correct =  true;
+         
+//         try{
+//             
+//            entityTransaction =  entityManager.getTransaction();
+//            entityTransaction.begin();
+//            entityManager.persist(usuarioJPA);
+//            entityTransaction.commit();
+//            result.correct =  true;
+//            
+//         } catch (Exception ex) {
+//             
+//             if(entityTransaction != null){
+//             
+//                entityTransaction.rollback();
+//                
+//             }
+//             
+//             result.correct =  false;
+//             result.correct = false;
+//             result.errorMessage = ex.getLocalizedMessage();
+//             result.ex = ex;
+//         
+//         }
+          
+     } catch(Exception ex) {
+     
+         result.correct = false;
+         result.errorMessage = ex.getLocalizedMessage();
+         result.ex = ex;
+     
+     }
+     
+     return result;
     }
 
 }

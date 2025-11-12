@@ -462,7 +462,7 @@ public class UsuarioController {
 
         }
 
-        Result result = usuarioDAOImplementation.Add(usuario);
+        Result result = usuarioJPADAOImplementation.Add(usuario);
 
         if (result.correct) {
 
