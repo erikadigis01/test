@@ -482,10 +482,22 @@ public class UsuarioController {
 
     }
 
-    @PostMapping("/updateImagen/{usuario}")
-    public String UpdateImagen(@PathVariable("usuario") Usuario usuario) {
-
-        usuarioDAOImplementation.UpdateImagen(usuario);
+    @PostMapping("/updateImagen/{idUsuario}")
+    public String UpdateImagen(@PathVariable("idUsuario") Integer idUsuario, 
+        @RequestParam("imagen") MultipartFile imagenFile) {
+        
+        Result result  = usuarioDAOImplementation.GetById(idUsuario);
+        Usuario usuario =  (Usuario) result.object;
+        
+        try {
+            //Conversion de imagen;
+            String imagen = Base64.getEncoder().encodeToString(imagenFile.getBytes());
+            usuario.setImagen(imagen);
+            usuarioDAOImplementation.UpdateImagen(usuario);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return "redirect:/usuario/detail/" + usuario.getIdUsuario();
     }

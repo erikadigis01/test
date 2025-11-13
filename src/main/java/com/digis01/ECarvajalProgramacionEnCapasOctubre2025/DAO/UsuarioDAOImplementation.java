@@ -529,7 +529,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                 } else {
                 
                     resultSP.correct = false;
-                    resultSP.errorMessage = "No se pudo actualizar la direccion";
+                    resultSP.errorMessage = "No se pudo actualizar la imagen";
                     
                 }
             

@@ -38,6 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                          <div class="d-flex justify-content-center">
                                 <div data-mdb-ripple-init class="btn btn-primary btn-rounded">
                                     <label class="form-label text-white m-1" for="customFile2">Choose file</label>
+                                    
                                     <input type="file" class="form-control d-none" id="customFile2" onchange="displaySelectedImage(event, 'Idimagen')" />
                                 </div>
                             </div>
@@ -419,18 +420,35 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
+                const file = fileInput.files[0];
 
                 reader.onload = function(e) {
                     selectedImage.src = e.target.result;
+                    
+                    const userId = [[${usuario.idUsuario}]];
+                    const formData = new FormData();
+                    formData.append('imagen', file);
+                    
                     $.ajax({
-                        url:"/usuario/updateImagen"+ usuario,
+                        url:"/usuario/updateImagen/"+ userId,
                         type:"POST",
+                        processData : false,
+                        data: formData,
+                        contentType : false,
                         success: function(data, textStatus, jqXHR){
-                            $("#Idimagen").attr('src', usuario.Imagen);
+                           Swal.fire ({
+                               title : "Foto actualizada",
+                               daggrable : true,
+                               icon : "success"
+                           });
                         }
                         ,
                         error: function (jqXHR, textStatus, errorThrown) {
-                                alert("no hay nada por cargar :/");
+                               Swal.fire ({
+                               title : "Foto  no actualizada",
+                               daggrable : true,
+                               icon : "error"
+                           });
                         }
                     });
                     alert(usuario.Imagen);
