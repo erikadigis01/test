@@ -184,8 +184,22 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
                 List<DireccionJPA> direccionesJPA = usuarioJPA.getDireccion();
                 
                 
+                //mapeo con rowmapper
+//                modelMapper.map(usuarioML, usuarioJPA);
                 
-                modelMapper.map(usuarioML, usuarioJPA);
+                //mapeo manual
+                usuarioJPA.setUserName(usuarioML.getUserName());
+                usuarioJPA.setNombre(usuarioML.getNombre());
+                usuarioJPA.setApellidoPaterno(usuarioML.getApellidoPaterno());
+                usuarioJPA.setApellidoMaterno(usuarioML.getApellidoMaterno());
+                usuarioJPA.setEmail(usuarioML.getEmail());
+                usuarioJPA.setFechaNacimiento(usuarioML.getFechaNacimiento());
+                usuarioJPA.setTelefono(usuarioML.getTelefono());
+                usuarioJPA.setCelular(usuarioML.getCelular());
+                usuarioJPA.setCurp(usuarioML.getCurp());
+                usuarioJPA.Roll = new RollJPA();
+                usuarioJPA.Roll.setIdRoll(usuarioML.getRoll().getIdRoll());
+                usuarioJPA.Roll.setNombreRoll(usuarioML.getRoll().getNombreRoll());
                 
                  
                 //Atributos y propiedades que se preservan 
