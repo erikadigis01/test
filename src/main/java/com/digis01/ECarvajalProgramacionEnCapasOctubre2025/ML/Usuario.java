@@ -14,6 +14,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class Usuario {
     
+    
+    
     private int IdUsuario;
     @Pattern(regexp="(?=.*[a-zA-ZñÑ])(?=.*[\\d])(?=.*[._-])^[a-zA-ZñÑ][a-zA-Z0-9_.-]+?$", message = "Su username debe contener Letras, numeros y caracteres especiales")
     @NotNull(message = "El campo no puede ser nulo")
@@ -45,7 +47,7 @@ public class Usuario {
     @Pattern(regexp = "(^[^\\s]+@+[a-zA-Z0-9_-]+[\\.]+[a-zA-Z0-9_-]+[\\.]+[a-zA-Z0-9_-]+$)", message = "Direccion de correo invalida")
     private String Email;
     
-    @NotNull(message = "El campo no puede ser nulo")
+    @NotNull(message = "El campo no puede ser nulo", groups = ValidationGroup.OnCreate.class)
     @NotBlank(message = "El campo debe contener datos")
 //    @Pattern(regexp ="(?=.{8})(?=.*[A-Z])(?=.*[-_])^[a-zA-ZñÑ0-9_-]+$" , message = "El password debe contener una mayuscula, un numero, un guion y debe tener 8 caracteres minimo")
     private String Password;

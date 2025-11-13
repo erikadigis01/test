@@ -13,6 +13,7 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.UsuarioValidator;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.ValidationGroup;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.Service.UsuarioTransaccion;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -53,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -383,26 +385,30 @@ public class UsuarioController {
     }
 
     @PostMapping("/detail")
-    public String Update(@Valid @ModelAttribute("usuario") Usuario usuario,
+    public String Update(@Validated(ValidationGroup.OnUpdate.class) @ModelAttribute("usuario") Usuario usuario,
             BindingResult bindingResult, Model model,
             RedirectAttributes redirectAttributes) {
+        
+        
 
         if (bindingResult.hasErrors()) {
+        
+            model.addAttribute("error", "Error al actualizar usuario: " );
+            model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
+            redirectAttributes.addFlashAttribute("errorMessage", "El usuario " + usuario.getUserName() + "no se creo" + "Error:" + bindingResult.getAllErrors().toString());
+            
+        } else {
+            
+            Result result = usuarioJPADAOImplementation.Update(usuario);
+            Usuario usuarioUpdate = (Usuario) result.object;
+            
+             if (result.correct) {
+                redirectAttributes.addFlashAttribute("successMessage", "El usuario " + usuarioUpdate.getNombre() + "se actualizo con exito.");
+                
 
-            Result result = usuarioDAOImplementation.Update(usuario);
-
-            if (result.correct) {
-                redirectAttributes.addFlashAttribute("successMessage", "El usuario " + usuario.getUserName() + "se actualizo con exito.");
-                return "redirect:/usuario/detail/" + usuario.getIdUsuario();
-
-            } else {
-                model.addAttribute("error", "Error al actualizar usuario: " + result.errorMessage);
-                model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
-//                redirectAttributes.addFlashAttribute("errorMessage", "El usuario " + usuario.getUserName() + "no se creo" + "Error:" + result.errorMessage);
-                return "UsuarioDetail";
             }
-
         }
+        
         return "redirect:/usuario/detail/" + usuario.getIdUsuario();
 
     }

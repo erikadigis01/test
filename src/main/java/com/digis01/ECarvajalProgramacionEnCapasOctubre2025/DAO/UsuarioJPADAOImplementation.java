@@ -11,9 +11,12 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Pais;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
+import org.modelmapper.TypeToken;
+import java.lang.reflect.Type;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,9 +93,6 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
          
         UsuarioJPA usuarioJPA =  new UsuarioJPA();
         
-        
-        
-        
         usuarioJPA = modelMapper.map(usuarioML, UsuarioJPA.class);
         usuarioJPA.Direccion.get(0).UsuarioJPA = usuarioJPA;
         entityManager.persist(usuarioJPA);
@@ -163,6 +163,72 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         
         return result;
         
+    }
+    
+    @Transactional
+    @Override
+    public Result Update(Usuario usuarioML) {
+        
+        Result result = new Result();
+        
+        int id = usuarioML.getIdUsuario();
+        
+        try {
+            
+            UsuarioJPA usuarioJPA  = entityManager.find(UsuarioJPA.class, id);
+            
+            if(usuarioJPA != null) {
+            
+                String password = usuarioJPA.getPassword();
+                String imagen = usuarioJPA.getImagen();
+                List<DireccionJPA> direccionesJPA = usuarioJPA.getDireccion();
+                
+                
+                
+                modelMapper.map(usuarioML, usuarioJPA);
+                
+                 
+                //Atributos y propiedades que se preservan 
+                usuarioJPA.setPassword(password);
+                usuarioJPA.setImagen(imagen);
+                usuarioJPA.setDireccion(direccionesJPA);
+                
+               
+                try{
+                    entityManager.merge(usuarioJPA);
+                    
+                    Usuario usuarioUpdate = modelMapper.map(usuarioJPA, Usuario.class);
+                    
+                    result.object =  usuarioUpdate;
+                    result.correct = true;
+                    
+                } catch (PersistenceException ex) {
+                    
+                    result.correct = false;
+                    result.errorMessage = ex.getLocalizedMessage();
+                    result.ex = ex;
+                
+                }
+                
+            } else {
+            
+                result.correct =  false;
+                result.errorMessage = "No se encontro un usuario";
+            }
+//                    modelMapper.map(usuarioML, UsuarioJPA.class);
+            
+        
+        
+        } catch (Exception ex) {
+        
+            result.correct =  false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+    
     }
 
 }
