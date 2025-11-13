@@ -10,5 +10,6 @@ public interface IUsuarioJPA {
     Result Add(Usuario usuario);
     Result GetById(int Id);
     Result Update(Usuario usuario);
+    Result Delete(int Id);
     
 }

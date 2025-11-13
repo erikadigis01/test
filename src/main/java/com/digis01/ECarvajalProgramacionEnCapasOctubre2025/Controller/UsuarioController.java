@@ -360,7 +360,7 @@ public class UsuarioController {
     @GetMapping("delete/{id}")
     public String Delete(@PathVariable("id") int id, Model model, RedirectAttributes redirectAttributes) {
 
-        Result result = usuarioDAOImplementation.Delete(id);
+        Result result = usuarioJPADAOImplementation.Delete(id);
         redirectAttributes.addFlashAttribute("successDeleteMessage", result.object);
         return "redirect:/usuario";
     }

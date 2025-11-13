@@ -244,5 +244,50 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
     
     }
+    
+    @Transactional
+    @Override
+    public Result Delete(int Id) {
+        
+        Result result = new Result();
+        
+        try {
+            
+            UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, Id);
+            
+            if(usuarioJPA != null){
+                
+                try {
+                    
+                    entityManager.remove(usuarioJPA);
+                    result.correct = true;
+                
+                } catch (PersistenceException ex) {
+                    
+                    result.correct = false;
+                    result.errorMessage = ex.getLocalizedMessage();
+                
+                }
+                
+                
+            } else {
+            
+                result.correct = false;
+                result.errorMessage = "Usuario no encontrado";
+                
+            }
+        
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
+    }
 
 }
