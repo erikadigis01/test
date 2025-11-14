@@ -133,8 +133,9 @@ public class UsuarioController {
 
             errores = ValidarCampos(usuarios);
             if (errores == null || errores.isEmpty()) {
-
-                usuarioDAOImplementation.AddAll(usuarios);
+                
+                //jdbc
+                Result AddAll = usuarioJPADAOImplementation.AddAll(usuarios);
                 System.out.print("Las datos no contienen errores");
             } else {
 

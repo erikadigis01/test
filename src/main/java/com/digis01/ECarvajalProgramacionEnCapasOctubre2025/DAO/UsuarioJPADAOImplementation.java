@@ -11,6 +11,7 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Pais;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
+import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.Repository.UsuarioRepository;
 import org.modelmapper.TypeToken;
 import java.lang.reflect.Type;
 import jakarta.persistence.EntityManager;
@@ -33,6 +34,9 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
     
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     public Result GetAll() {
@@ -492,6 +496,46 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
             result.ex = ex;
             
         }
+        
+        return result;
+        
+    }
+    
+    @Transactional
+    @Override
+    public Result AddAll(List<Usuario> usuariosML) {
+        
+        Result result = new Result();
+        
+        //mapeo de la lista
+        
+        try {
+            
+            Type tipoLista = new TypeToken<List<UsuarioJPA>>(){}.getType();
+        
+            List<UsuarioJPA> usuariosJPA = modelMapper.map(usuariosML, tipoLista);
+            
+            try {
+                    
+                usuarioRepository.saveAll(usuariosJPA);
+                result.correct = true;
+                
+            
+            } catch (PersistenceException ex) {
+                
+                result.correct = false;
+                result.errorMessage = ex.getLocalizedMessage();
+                
+            }
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        
+        }
+        
         
         return result;
         
