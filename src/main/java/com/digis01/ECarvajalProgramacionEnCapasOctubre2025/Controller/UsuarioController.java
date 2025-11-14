@@ -512,7 +512,8 @@ public class UsuarioController {
 
         if (direccion.getIdDireccion() == 0) { // agregar direccion a usuario
 
-            usuarioDAOImplementation.AddDireccion(direccion, idUsuario);
+            //usuarioDAOImplementation.AddDireccion(direccion, idUsuario);
+            usuarioJPADAOImplementation.AddDireccion(direccion, idUsuario);
             redirectAttributes.addFlashAttribute("successAddDireccionMessage", "Dirección agregada correctamente");
 
         } else { // editar la direccion a usuario

@@ -289,5 +289,36 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
         
     }
+    
+    @Transactional
+    @Override
+    public Result AddDireccion(Direccion direccionML, int idusuario) {
+        
+        Result result = new Result();
+        EntityTransaction entityTransaction = null;
+        
+        
+        try {
+        
+            DireccionJPA direccionJPA = new DireccionJPA();
+            direccionJPA = modelMapper.map(direccionML, DireccionJPA.class);
+            direccionJPA.UsuarioJPA = new UsuarioJPA();
+            direccionJPA.UsuarioJPA.setIdUsuario(idusuario);
+            entityManager.persist(direccionJPA);
+
+
+            result.correct =  true;
+            
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+    
+    }
 
 }
