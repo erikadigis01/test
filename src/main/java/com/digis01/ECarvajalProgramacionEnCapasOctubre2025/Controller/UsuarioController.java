@@ -538,9 +538,16 @@ public class UsuarioController {
     @GetMapping("deleteDireccion/{idDireccion}")
     public String DeleteDireccion(@PathVariable("idDireccion") int idDireccion, Model model, RedirectAttributes redirectAttributes) {
 
-        Result result = usuarioDAOImplementation.DeleteDireccion(idDireccion);
-        redirectAttributes.addFlashAttribute("successDeleteDireccionMessage", result.object);
-        return "redirect:/usuario";
+        Result result = usuarioJPADAOImplementation.DeleteDireccion(idDireccion);
+        int idUsuario = (int) result.object;
+        
+        if(result.correct == true){
+            
+            redirectAttributes.addFlashAttribute("successDeleteDireccionMessage", "Direccion eliminada");
+
+        } 
+       
+        return "redirect:/usuario/detail/" + idUsuario;
     }
 
     @GetMapping("estado/{idPais}")

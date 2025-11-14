@@ -15,5 +15,6 @@ public interface IUsuarioJPA {
     Result AddDireccion(Direccion direccion, int idusuario);
     Result UpdateDireccion(Direccion direccion, int idUsuario);
     Result GetByIdDireccion(int IdDireccion);
+    Result DeleteDireccion(int IdDireccion);
     
 }

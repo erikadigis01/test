@@ -408,5 +408,56 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
         
     }
+    
+    @Transactional
+    @Override
+    public Result DeleteDireccion(int IdDireccion) {
+       
+        Result result = new Result();
+        
+        try {
+            
+            DireccionJPA direccionJPA = entityManager.find(DireccionJPA.class, IdDireccion);
+            
+            //para redireccionar al detail
+            int idUsuario = direccionJPA.UsuarioJPA.getIdUsuario();
+           
+            
+            if(direccionJPA != null){
+                    
+                try {
+                    
+                    entityManager.remove(direccionJPA);
+                    
+                    result.correct = true;
+                    
+                    result.object = idUsuario;
+                
+                } catch (PersistenceException ex) {
+                
+                    result.correct = false;
+                    
+                    result.errorMessage = ex.getLocalizedMessage();
+                    
+                }
+            
+            } else {
+            
+                result.correct =  false;
+                
+                result.errorMessage = "Direccion no encontrada";
+            }
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
+    }
 
 }
