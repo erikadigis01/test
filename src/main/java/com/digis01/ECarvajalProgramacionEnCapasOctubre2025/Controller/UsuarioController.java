@@ -518,7 +518,7 @@ public class UsuarioController {
 
         } else { // editar la direccion a usuario
 
-            usuarioDAOImplementation.UpdateDireccion(direccion, idUsuario);
+            usuarioJPADAOImplementation.UpdateDireccion(direccion, idUsuario);
             redirectAttributes.addFlashAttribute("successUpdateDireccionMessage", "Dirección actualizada correctamente");
         }
 

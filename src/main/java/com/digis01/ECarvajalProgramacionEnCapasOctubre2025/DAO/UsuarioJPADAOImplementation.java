@@ -320,5 +320,58 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
     
     }
+    
+    @Transactional
+    @Override
+    public Result UpdateDireccion(Direccion direccionML, int idUsuario) {
+        
+        Result result = new Result();
+        
+        try {
+            
+            DireccionJPA direccionJPA = entityManager.find(DireccionJPA.class, direccionML.getIdDireccion());
+            
+            if(direccionJPA != null) {
+                
+                direccionJPA = modelMapper.map(direccionML, DireccionJPA.class);
+                direccionJPA.UsuarioJPA = new UsuarioJPA();
+                direccionJPA.UsuarioJPA.setIdUsuario(idUsuario);
+                
+                try {
+                
+                    entityManager.merge(direccionJPA);
+                    Direccion direccionUpdate = modelMapper.map(direccionJPA, Direccion.class);
+                    result.object = direccionUpdate;
+                    result.correct = true;
+                
+                } catch (PersistenceException ex) {
+                
+                    result.correct = false;
+                    result.errorMessage = ex.getLocalizedMessage();
+                    result.ex = ex;
+                
+                }
+
+            
+            } else {
+                
+                result.correct = false;
+                result.errorMessage = "La direccion no existe";
+            
+            
+            }
+            
+            
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+    }
 
 }
