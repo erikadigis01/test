@@ -12,6 +12,7 @@ public interface IUsuarioJPA {
     Result GetById(int Id);
     Result Update(Usuario usuario);
     Result Delete(int Id);
+    Result UpdateImagenUsuario(Usuario usuario);
     Result AddDireccion(Direccion direccion, int idusuario);
     Result UpdateDireccion(Direccion direccion, int idUsuario);
     Result GetByIdDireccion(int IdDireccion);

@@ -493,7 +493,7 @@ public class UsuarioController {
             //Conversion de imagen;
             String imagen = Base64.getEncoder().encodeToString(imagenFile.getBytes());
             usuario.setImagen(imagen);
-            usuarioDAOImplementation.UpdateImagen(usuario);
+            usuarioJPADAOImplementation.UpdateImagenUsuario(usuario);
             
         } catch (IOException ex) {
             Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);

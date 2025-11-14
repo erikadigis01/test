@@ -459,5 +459,42 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
         
     }
+    
+    @Transactional
+    @Override
+    public Result UpdateImagenUsuario(Usuario usuarioML) {
+        
+        Result result = new Result();
+        
+        try {
+        
+            UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, usuarioML.getIdUsuario());
+            usuarioJPA.setImagen(usuarioML.getImagen());
+            
+            try {
+                
+                entityManager.merge(usuarioJPA);
+                result.correct = true;
+            
+            
+            } catch (PersistenceException ex) {
+            
+                 result.correct = false;
+                 result.errorMessage = ex.getLocalizedMessage();
+            
+            }
+            
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
+    }
 
 }
