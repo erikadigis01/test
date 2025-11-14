@@ -373,5 +373,40 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         
         return result;
     }
+    @Transactional
+    @Override
+    public Result GetByIdDireccion(int IdDireccion) {
+        
+        Result result = new Result();
+        
+        try {
+           
+            DireccionJPA direccionJPA = entityManager.find(DireccionJPA.class, IdDireccion);
+            
+            if(direccionJPA != null) {
+                
+                Direccion direccionML = modelMapper.map(direccionJPA, Direccion.class);
+                result.object = direccionML;
+                result.correct = true;
+            
+            } else {
+                
+                result.correct = false;
+                result.errorMessage = "Direccion no encontrada";
+            
+            }
+        
+        
+        } catch (Exception ex) {
+            
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        
+        }
+        
+        return result;
+        
+    }
 
 }

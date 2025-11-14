@@ -531,7 +531,7 @@ public class UsuarioController {
     public Result GetDireccionById(@PathVariable("idDireccion") int idDireccion,
             Model model) {
 
-        return usuarioDAOImplementation.GetByIdDireccion(idDireccion);
+        return usuarioJPADAOImplementation.GetByIdDireccion(idDireccion);
 
     }
 
