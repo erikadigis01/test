@@ -82,9 +82,6 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioValidator usuarioValidator;
-
-    @Autowired
-    private UsuarioTransaccion usuarioTransaccion;
     
     @Autowired
     private UsuarioJPADAOImplementation usuarioJPADAOImplementation;

@@ -11,7 +11,6 @@ import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Pais;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Result;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Roll;
 import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.ML.Usuario;
-import com.digis01.ECarvajalProgramacionEnCapasOctubre2025.Repository.UsuarioRepository;
 import org.modelmapper.TypeToken;
 import java.lang.reflect.Type;
 import jakarta.persistence.EntityManager;
@@ -35,8 +34,8 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
     @Autowired
     private ModelMapper modelMapper;
     
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+//    @Autowired
+//    private UsuarioRepository usuarioRepository;
 
     @Override
     public Result GetAll() {
@@ -515,19 +514,26 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         
             List<UsuarioJPA> usuariosJPA = modelMapper.map(usuariosML, tipoLista);
             
-            try {
-                    
-                usuarioRepository.saveAll(usuariosJPA);
-                result.correct = true;
-                
             
-            } catch (PersistenceException ex) {
+                    
+                for (UsuarioJPA usuarioJPA : usuariosJPA) {
                 
-                result.correct = false;
-                result.errorMessage = ex.getLocalizedMessage();
+                    try {
+                        
+                        entityManager.persist(usuarioJPA);
+                        result.correct = true;
+                        
+                    } catch (PersistenceException ex) {
                 
-            }
-        
+                        result.correct = false;
+                        result.errorMessage = ex.getLocalizedMessage();
+
+                    }
+                    
+                    
+                }
+                //usuarioRepository.saveAll(usuariosJPA);
+             
         } catch (Exception ex) {
         
             result.correct = false;
@@ -540,5 +546,37 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
         
     }
+
+//    @Override
+//    public Result GetColumnsName() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//    
+//    @Transactional
+//    @Override
+//    public Result FindByNombre(String nombre) {
+//      
+//        Result result = new Result();
+//        
+//        try {
+//            
+//            List<UsuarioJPA> usuariosJPA = usuarioRepository.findByNombre(nombre);
+//            
+//            Type tipoLista = new TypeToken<List<Usuario>>(){}.getType();
+//            List<Usuario> usuariosML = modelMapper.map(usuariosJPA, tipoLista);
+//            result.correct = true;
+//            result.objects = (List<Object>) (Object) usuariosML;
+//        
+//        } catch (Exception ex) {
+//        
+//            result.correct = false;
+//            result.errorMessage = ex.getLocalizedMessage();
+//            result.ex = ex;
+//            
+//        }
+//        
+//        return result;
+//        
+//    }
 
 }
