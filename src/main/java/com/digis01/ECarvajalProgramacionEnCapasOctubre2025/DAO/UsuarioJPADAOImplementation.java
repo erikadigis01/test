@@ -579,4 +579,53 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
 //        
 //    }
 
+    @Override
+    public Result GetAllFilter(String campo, String valor) {
+       Result result = new Result();
+        
+        try {
+            
+            
+            
+            TypedQuery<UsuarioJPA> queryUsuario = entityManager.createQuery("FROM UsuarioJPA WHERE " + campo + " LIKE :valor", UsuarioJPA.class)
+                    .setParameter("valor", "%" + valor + "%");
+            
+            //Resultado del JPA
+            List<UsuarioJPA> usuariosJPA = queryUsuario.getResultList();
+            
+            //en donde se debe guardar
+            result.objects = new ArrayList<>();
+            
+            for(UsuarioJPA usuarioJPA : usuariosJPA) {
+            
+                Usuario usuarioML = modelMapper.map(usuarioJPA, Usuario.class);
+                usuarioML.Direccion =  new ArrayList<Direccion>();
+                
+                for(DireccionJPA direccionJPA : usuarioJPA.getDireccion()){
+                 
+                    Direccion direccionML =  new Direccion();
+                    
+                    direccionML = modelMapper.map(direccionJPA, Direccion.class);
+                    
+                    usuarioML.Direccion.add(direccionML);
+                 
+                }
+
+                result.objects.add(usuarioML);
+           
+            }
+            
+            
+            result.correct = true;
+            
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+
 }

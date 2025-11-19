@@ -38,20 +38,27 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <!--<span class="">No hay errores</span>-->
                              <a class="btn btn-success" th:href="@{/usuario/cargamasiva/procesar}">Procesar</a>
                         </div>
-                        <div class="col-3">
-                            <select class="form-select">
-                                <option value="0" selected>Buscar por</option>
-                                <option value="nombre">Nombre</option>
-                                <option value="apellidoPaterno" >Apellido Paterno</option>
-                                <option value="apellidoMaterno" >Apellido Materno</option>
-                            </select>
-                        </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" id=""  placeholder="Campo" >
-                        </div>
-                        <div class="col-1">
-                            <a class="btn btn-secondary">Buscar</a>
-                        </div>
+                        <form th:action="@{filtro}" method="post" class="row" id="filtro">
+
+                            <div class="col-3">
+                                <select class="form-select" name="campo">
+                                    <option value="0" selected>Buscar por</option>
+                                    <option value="Nombre">Nombre</option>
+                                    <option value="ApellidoPaterno">Apellido Paterno</option>
+                                    <option value="ApellidoMaterno">Apellido Materno</option>
+                                </select>
+                            </div>
+
+                            <div class="col-3">
+                                <input type="text" class="form-control" name="valor" id="buscarCampo" placeholder="Campo">
+                            </div>
+
+                            <div class="col-1">
+                                <button type="submit" class="btn btn-secondary" for="filtro">Buscar</button>
+                            </div>
+
+                      </form>
+
                     </div>
 
                 </form>

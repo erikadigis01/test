@@ -97,6 +97,16 @@ public class UsuarioController {
         return "UsuarioIndex";
 
     }
+    @GetMapping("filtro")
+    public String IndexFiltro(@RequestParam ("campo") String campo, @RequestParam ("valor") String valor, Model model) {
+        
+        Result resultJPA =  usuarioJPADAOImplementation.GetAllFilter(campo, valor);
+        model.addAttribute("usuarios", resultJPA.objects);
+        model.addAttribute("errores", new ArrayList<>());
+        model.addAttribute("isCorrect", false);
+        return "UsuarioIndex";
+    
+    }
     
     @GetMapping("/cargamasiva/procesar")
     public String CargaMasivaProcesar(HttpSession session, Model model,
