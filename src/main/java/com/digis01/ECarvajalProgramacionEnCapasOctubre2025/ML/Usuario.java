@@ -17,6 +17,7 @@ public class Usuario {
     
     
     private int IdUsuario;
+    
     @Pattern(regexp="(?=.*[a-zA-ZñÑ])(?=.*[\\d])(?=.*[._-])^[a-zA-ZñÑ][a-zA-Z0-9_.-]+?$", message = "Su username debe contener Letras, numeros y caracteres especiales")
     @NotNull(message = "El campo no puede ser nulo")
     @NotBlank(message = "El campo debe contener datos")

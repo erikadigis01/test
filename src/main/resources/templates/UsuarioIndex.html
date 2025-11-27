@@ -7,14 +7,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
       xmls:layout="https://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Layout}">
 
-    <body class="container bg-light" layout:fragment="content">
-        <header>
-            <div class="d-flex align-items-center p-3 my-4 text-white  bg-primary rounded shadow-sm">
-                <h3 class="3h-3">Usuarios</h3>
-            </div>
+    <section class="container my-5" layout:fragment="content">
+        <section>
+            
             <div> 
                 <form>
                     <div class="row justify-content-end">
+                        <div class="col-2 d-flex align-items-center  text-secondary">
+                            <h3 class="h-3">Usuarios</h3>
+                        </div>
                         <div class="col-2">
                             <div th:if="${errores.size() != 0}">
                                 <span class="text-danger">Existen errores en tu archivo</span>
@@ -64,7 +65,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </form>
 
             </div>
-        </header>
+        </section>
         <main>
             <div class="my-3 p-3 bg-body rounded shadow-sm">
                 <div class="row justify-content-end">
@@ -120,13 +121,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <td class="">
                                     <div class="badge text-bg-secondary"><span th:text="${usuario.Roll.NombreRoll}"></span></div>
                                 </td>
-                                <td class=" col-3">
+                                <td class=" col-1">
                                     <a type="button" class="btn btn-primary btn-sm" th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"> 
                                         <i class="bi bi-pencil-square"></i>
-                                        Editar
+                                      
                                     </a>
                                     <button type="button" class="btn btn-danger btn-sm" th:onclick="|confirmarEliminacionUsuario(${usuario.IdUsuario})|"> 
-                                        <i class="bi bi-trash3-fill"> Eliminar</i>
+                                        <i class="bi bi-trash3-fill"></i>
                                     </button>
                                 </td>
                             </tr> 
@@ -195,7 +196,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </script>
 
 
-    </body>
+    
 <!--    <script th:if="${successErrorArchivo}">
         
         alert("Entro a la funcion");
@@ -239,5 +240,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 draggable: true
         });
     </script>
+    </section>
 </html>
 
