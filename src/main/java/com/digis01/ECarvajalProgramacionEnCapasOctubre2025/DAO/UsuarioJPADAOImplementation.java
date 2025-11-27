@@ -22,11 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsuarioJPADAOImplementation implements IUsuarioJPA{
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     
     @Autowired
     private EntityManager entityManager;
@@ -95,6 +100,10 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
      try {
          
         UsuarioJPA usuarioJPA =  new UsuarioJPA();
+        
+        //mandar encriptada la contrase
+        String passwordEncript = passwordEncoder.encode(usuarioML.getPassword());
+        usuarioML.setPassword(passwordEncript);
         
         usuarioJPA = modelMapper.map(usuarioML, UsuarioJPA.class);
         usuarioJPA.Direccion.get(0).UsuarioJPA = usuarioJPA;

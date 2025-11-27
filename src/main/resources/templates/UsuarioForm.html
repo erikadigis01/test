@@ -213,19 +213,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <footer></footer>
         <script>
             function displaySelectedImage(event, elementId) {
-            const selectedImage = document.getElementById(elementId);
-            const fileInput = event.target;
+                const selectedImage = document.getElementById(elementId);
+                const fileInput = event.target;
 
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
 
-                reader.onload = function(e) {
-                    selectedImage.src = e.target.result;
-                };
+                    reader.onload = function(e) {
+                        selectedImage.src = e.target.result;
+                    };
 
-                reader.readAsDataURL(fileInput.files[0]);
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
             }
-        }
 
             $(document).ready(function () {
                 $("#ddlpais").change(function () {
