@@ -392,6 +392,24 @@ public class UsuarioController {
         }
 
     }
+    
+    @GetMapping("detailUserName/{userName}")
+    public String FormDetail(@PathVariable("userName") String userName, Model model) {
+        Result result = usuarioJPADAOImplementation.GetByUserName(userName);
+        if (result.correct) {
+
+            model.addAttribute("usuario", result.object);
+            model.addAttribute("rolles", rollDAOImplementation.GetAll().objects);
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("direccion", new Direccion());
+            return "UsuarioDetail";
+        } else {
+
+            return "redirect:/usuario?error=Usuario no encontrado";
+
+        }
+
+    }
 
     @PostMapping("/detail")
     public String Update(@Validated(ValidationGroup.OnUpdate.class) @ModelAttribute("usuario") Usuario usuario,

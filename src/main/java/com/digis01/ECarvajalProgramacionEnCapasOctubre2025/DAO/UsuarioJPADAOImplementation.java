@@ -637,4 +637,56 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA{
         return result;
     }
 
+    @Override
+    public Result GetByUserName(String userName) {
+       
+        Result result = new Result();
+         
+        try {
+        
+            TypedQuery<UsuarioJPA> queryUsuario = entityManager.createQuery("FROM UsuarioJPA  WHERE userName = :userName", UsuarioJPA.class);
+            
+            queryUsuario.setParameter("userName", userName);
+            
+            try {
+            
+                UsuarioJPA usuarioJPA = queryUsuario.getSingleResult();
+                
+                Usuario usuarioML = modelMapper.map(usuarioJPA, Usuario.class);
+                usuarioML.Direccion =  new ArrayList<Direccion>();
+                
+                for(DireccionJPA direccionJPA : usuarioJPA.getDireccion()){
+                 
+                    Direccion direccionML =  new Direccion();
+                    
+                    direccionML = modelMapper.map(direccionJPA, Direccion.class);
+                    
+                    usuarioML.Direccion.add(direccionML);
+                 
+                }
+                
+                result.object = usuarioML;
+                
+                result.correct = true;
+                
+            
+            } catch (NoResultException ex) {
+            
+                result.correct = false;
+                result.errorMessage = ex.getLocalizedMessage();
+                result.ex = ex;
+            }
+        
+        } catch (Exception ex) {
+        
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
+    }
+
 }

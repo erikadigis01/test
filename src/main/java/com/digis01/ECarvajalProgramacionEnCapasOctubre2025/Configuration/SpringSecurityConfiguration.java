@@ -20,24 +20,29 @@ public class SpringSecurityConfiguration {
     
     private final UserDetailsJPAService userDetailsJPAService;
     
-    public SpringSecurityConfiguration (UserDetailsJPAService userDetailsJPAService1){
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    public SpringSecurityConfiguration (UserDetailsJPAService userDetailsJPAService1, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler){
         
         this.userDetailsJPAService = userDetailsJPAService1;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         
     }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception{
         
-        http.authorizeHttpRequests( configurer -> configurer
-                .requestMatchers("/loginUsuario").permitAll()
-                .requestMatchers("/usuario/**")
-                .hasAnyRole("Administrador", "Alumno", "Maestro")
+        http.authorizeHttpRequests( authorizeRequests -> authorizeRequests
+                .requestMatchers("/usuario/detailUserName/{userName}").hasRole("Alumno")
+                .requestMatchers("/usuario/**").hasAnyRole("Administrador", "Maestro")
+                .requestMatchers("/login").permitAll() // Rutas públicas
                 .anyRequest().authenticated())
+                
                 .formLogin( form -> form 
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/usuario", true)
+                        .defaultSuccessUrl("/login/success")
+                        .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -57,8 +62,9 @@ public class SpringSecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
     
-       // return new BCryptPasswordEncoder();
-       return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
+
+//        return NoOpPasswordEncoder.getInstance();
 
         
     }

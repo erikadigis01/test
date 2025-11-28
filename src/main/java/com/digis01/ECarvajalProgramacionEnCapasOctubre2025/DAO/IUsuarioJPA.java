@@ -20,6 +20,7 @@ public interface IUsuarioJPA {
     Result GetByIdDireccion(int IdDireccion);
     Result DeleteDireccion(int IdDireccion);
     Result GetAllFilter(String campo, String valor);
+    Result GetByUserName(String userName);
     //para filtrado
 //    Result GetColumnsName();
 //    Result FindByNombre(String nombre);
